@@ -6,75 +6,17 @@ function initialize() {
   var longitude = $('#map_canvas').attr('data-longitude');
   var mapMarker = $('#map_canvas').attr('data-marker');
   var mapMarkerName = $('#map_canvas').attr('data-marker-name');
-  var nottingham = new google.maps.LatLng(latitude, longitude);
-  var style = [{
-      "featureType": "road",
-      "elementType": "geometry",
-      "stylers": [{
-          "lightness": 100
-        },
-        {
-          "visibility": "simplified"
-        }
-      ]
-    },
-    {
-      "featureType": "water",
-      "elementType": "geometry",
-      "stylers": [{
-          "visibility": "on"
-        },
-        {
-          "color": "#C6E2FF"
-        }
-      ]
-    },
-    {
-      "featureType": "poi",
-      "elementType": "geometry.fill",
-      "stylers": [{
-        "color": "#C5E3BF"
-      }]
-    },
-    {
-      "featureType": "road",
-      "elementType": "geometry.fill",
-      "stylers": [{
-        "color": "#D1D1B8"
-      }]
-    }
-  ];
-  var mapOptions = {
-    center: nottingham,
-    mapTypeId: google.maps.MapTypeId.ROADMAP,
-    backgroundColor: "#000",
-    zoom: 15,
-    panControl: false,
-    zoomControl: true,
-    mapTypeControl: false,
-    scaleControl: false,
-    streetViewControl: false,
-    overviewMapControl: false,
-    zoomControlOptions: {
-      style: google.maps.ZoomControlStyle.LARGE
-    }
-  }
-  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
-  var mapType = new google.maps.StyledMapType(style, {
-    name: "Grayscale"
-  });
-  map.mapTypes.set('grey', mapType);
-  map.setMapTypeId('grey');
-  var marker_image = mapMarker;
-  var pinIcon = new google.maps.MarkerImage(marker_image, null, null, null, new google.maps.Size(40, 60));
-  marker = new google.maps.Marker({
-    position: nottingham,
-    map: map,
-    icon: pinIcon,
-    title: mapMarkerName
-  });
+
+    var map = L.map('map_canvas', {
+        scrollWheelZoom: false
+    }).setView([latitude, longitude], 15);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap'
+    }).addTo(map);
+    var marker = L.marker([latitude, longitude]).addTo(map);
+    if (mapMarkerName) marker.bindPopup(mapMarkerName);
 }
 var map = document.getElementById('map_canvas');
 if (map != null) {
-  google.maps.event.addDomListener(window, 'load', initialize);
+  window.addEventListener('load', initialize);
 }
